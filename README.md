@@ -7,6 +7,9 @@ python3.6 solution.py
 
 then feed the input.
 
+For timestamp in input, according to the spec, I assume it is iso 8601 format.
+
+
 If the input is price update, it will output nothing.
 
 If the input is exchange rate requests, it will output the desired result followed by the spec, but there are following possible situations:
