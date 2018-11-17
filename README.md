@@ -23,3 +23,6 @@ Unknown currency, continue...
 If you want to quit the program, press: ctrl + c, otherwise, the program will run forever, which means you can feed the inputs all the time.
 
 
+I did something simple for sanity check:
+1) if the input is empty, continue
+2) If the input is invalid, which means the input is not the price update and the input is not exchange rate requests, output error and continue
