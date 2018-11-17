@@ -29,8 +29,8 @@ def getPath(u, v, next_table):
         return []
 
     path = [u]
-
     while u != v:
+        #print(f'u: {u}  v: {v}')
         u = next_table[u][v]
         path.append(u)
 
@@ -63,7 +63,12 @@ for line in sys.stdin:
     if len(inputs) == 0:
         continue
     
-    
+    #
+    # invalid input, output error and continue
+
+    if not line[0].isdigit() and inputs[0] != 'EXCHANGE_RATE_REQUEST':
+        print('Invalid input, continue...')
+        continue
 
     #
     # price updates
@@ -139,6 +144,7 @@ for line in sys.stdin:
 
         node_nb = 0
 
+
         for node in V:
             if node == source_node:
                 source_node_id = node_nb
@@ -152,6 +158,13 @@ for line in sys.stdin:
             node_nb += 1
 
 
+
+        if source_node_id == -1 or dest_node_id == -1:
+            print('Unknown currency, continue...')
+            continue
+        
+
+
         rate = [[0] * node_nb for _ in range(node_nb)]
 
         next_table = [[None] * node_nb for _ in range(node_nb)]
@@ -162,7 +175,9 @@ for line in sys.stdin:
                 next_table[i][j] = j
                 
                 if i == j:
-                    continue
+                    rate[i][j] = 1
+                    rate[j][i] = 1
+##                    continue
 
                 node_1 = id_to_node[i]
                 node_2 = id_to_node[j]
@@ -182,11 +197,19 @@ for line in sys.stdin:
 
 
 
+
+            
+
         bestRates(rate, next_table, node_nb)
+        
+
+
 
         print(f'BEST_RATES_BEGIN {source_exchange} {source_currency} {destination_exchange} {destination_currency} {rate[source_node_id][dest_node_id]}')
 
         path = getPath(source_node_id, dest_node_id, next_table)
+
+
         for p in path:
             print(id_to_node[p])
 
@@ -195,9 +218,3 @@ for line in sys.stdin:
 
 
         
-            
-                
-        
-    
-
-    
