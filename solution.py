@@ -12,14 +12,17 @@ from collections import defaultdict
 # Floyd-Warshall algorithm implementation
 
 def bestRates(rate, next_table, node_nb):
-
+    
     for k in range(node_nb):
         for i in range(node_nb):
             for j in range(node_nb):
+
+                if i == j:
+                    continue
+                
                 if rate[i][j] < rate[i][k] * rate[k][j]:
                     rate[i][j] = rate[i][k] * rate[k][j]
                     next_table[i][j] = next_table[i][k]
-
 
 #
 # get path
@@ -30,7 +33,6 @@ def getPath(u, v, next_table):
 
     path = [u]
     while u != v:
-        #print(f'u: {u}  v: {v}')
         u = next_table[u][v]
         path.append(u)
 
@@ -144,7 +146,6 @@ for line in sys.stdin:
 
         node_nb = 0
 
-
         for node in V:
             if node == source_node:
                 source_node_id = node_nb
@@ -172,39 +173,41 @@ for line in sys.stdin:
         for i in range(node_nb):
             for j in range(node_nb):
 
-                next_table[i][j] = j
+                node_1 = id_to_node[i]
+                node_2 = id_to_node[j]
                 
                 if i == j:
                     rate[i][j] = 1
                     rate[j][i] = 1
-##                    continue
+                    continue
 
-                node_1 = id_to_node[i]
-                node_2 = id_to_node[j]
+                elif node_1[1] == node_2[1]:
+                    rate[i][j] = 1
+                    rate[j][i] = 1
+                    next_table[i][j] = j
+                    continue
 
+
+                next_table[i][j] = j
                 
 
                 #
                 # set factor
             
-                if node_2 in matrix[node_1] or node_1 in matrix[node_2]:
+
+                if node_2 in matrix[node_1]:
                     rate[i][j] = float(matrix[node_1][node_2][1])
+
+
+                if node_1 in matrix[node_2]:
                     rate[j][i] = float(matrix[node_2][node_1][1])
-
-                elif node_1[1] == node_2[1]:
-                    rate[i][j] = 1
-                    rate[j][i] = 1
-
-
+                    
 
 
             
 
         bestRates(rate, next_table, node_nb)
         
-
-
-
         print(f'BEST_RATES_BEGIN {source_exchange} {source_currency} {destination_exchange} {destination_currency} {rate[source_node_id][dest_node_id]}')
 
         path = getPath(source_node_id, dest_node_id, next_table)
